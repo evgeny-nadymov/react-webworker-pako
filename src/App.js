@@ -1,22 +1,29 @@
 import React from 'react';
-import logo from './logo.svg';
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import PakoWorker from './pako.worker';
 import './App.css';
+
+const worker = new PakoWorker();
+worker.onmessage = (event) => {
+  console.log('[UI] onmessage', event.data);
+};
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
         <a
           className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+          onClick={event => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const test = { my: 'super', puper: [456, 567], awesome: 'pako' };
+            worker.postMessage(test);
+            console.log('[UI] postMessage', test);
+          }}
         >
-          Learn React
+          Test Pako webworker (check config-overrides.js for details)
         </a>
       </header>
     </div>
